@@ -6,15 +6,11 @@ import (
 )
 
 type Car struct {
-	Name         string `db:"name" json:"name"`
-	Make         string `db:"make" json:"make"`
-	Powerplant   string `db:"powerplant" json:"powerplant"`
-	Aspiration   string `db:"aspiration" json:"aspiration"`
-	Fuel         string `db:"fuel" json:"fuel"`
-	Transmission string `db:"transmission" json:"transmission"`
-	Drivetrain   string `db:"drivetrain" json:"drivetrain"`
-	Type         string `db:"type" json:"type"`
-	Image        []byte `db:"image"`
+	Name       string `db:"name" json:"name"`
+	Make       string `db:"make" json:"make"`
+	Powerplant string `db:"powerplant" json:"powerplant"`
+	Drivetrain string `db:"drivetrain" json:"drivetrain"`
+	Image      []byte `db:"image"`
 }
 
 type CarModel struct {
@@ -26,12 +22,10 @@ func (cm *CarModel) Init(db *sqlx.DB) {
 }
 
 func (cm *CarModel) InsertCar(newCar Car) *Car {
-	query := "INSERT INTO cars (name, make, powerplant," +
-		"aspiration, fuel, transmission, drivetrain, type, image)"
-	if _, err := cm.db.Exec(query, &newCar.Name, &newCar.Make, &newCar.Powerplant, &newCar.Aspiration,
-		&newCar.Fuel, &newCar.Transmission, &newCar.Transmission, &newCar.Drivetrain,
-		&newCar.Type, &newCar.Image); err != nil {
-		logrus.Error("Model : cannot insert car")
+	query := "INSERT INTO cars (name, make, powerplant,drivetrain, image) VALUES (?,?,?,?,?)"
+	if _, err := cm.db.Exec(query, &newCar.Name, &newCar.Make, &newCar.Powerplant,
+		&newCar.Drivetrain, &newCar.Image); err != nil {
+		logrus.Error("Model : cannot insert car", err)
 		return nil
 	}
 	return &newCar

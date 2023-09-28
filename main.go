@@ -57,6 +57,11 @@ func main() {
 	carController := controller.CarsController{}
 	carController.Init(carModel)
 
+	engineModel := model.EngineModel{}
+	engineModel.Init(db.Database)
+	engineController := controller.EngineController{}
+	engineController.Init(engineModel)
+
 	e.Pre(middleware.RemoveTrailingSlash())
 
 	e.Use(middleware.CORS())
@@ -79,6 +84,7 @@ func main() {
 	routes.ManufacturersRoutes(e, manufacturerController)
 	routes.TypesRoutes(e, typesController)
 	routes.CarRoutes(e, carController)
+	routes.EngineRoutes(e, engineController)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.ServerPort)).Error())
 }

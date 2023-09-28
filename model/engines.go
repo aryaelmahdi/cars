@@ -7,13 +7,11 @@ import (
 
 type Engine struct {
 	Id            string `db:"id" json:"id"`
-	Cylinder      string `db:"cylinder" json:"cylinder"`
 	Configuration string `db:"configuration" json:"configuration"`
 	Displacement  string `db:"displacement" json:"displacement"`
 	Crankshaft    string `db:"crankshaft" json:"crankshaft"`
-	Aspirations   string `db:"aspirations" json:"aspirations"`
-	Horsepower    int    `db:"horsepower" json:"horsepower"`
-	Torque        int    `db:"torque" json:"torque"`
+	Horsepower    string `db:"horsepower" json:"horsepower"`
+	Torque        string `db:"torque" json:"torque"`
 }
 
 type EngineModel struct {
@@ -36,7 +34,7 @@ func (e *EngineModel) GetAllEngine() []Engine {
 func (e *EngineModel) GetEngineByID(id string) *Engine {
 	engine := Engine{}
 	query := "SELECT * FROM engines where id = ?"
-	if err := e.db.Get(engine, query, &id); err != nil {
+	if err := e.db.Get(&engine, query, &id); err != nil {
 		logrus.Error("Model : cannot get engine data")
 		return nil
 	}
@@ -44,10 +42,10 @@ func (e *EngineModel) GetEngineByID(id string) *Engine {
 }
 
 func (e *EngineModel) InsertEngine(newEngine Engine) *Engine {
-	query := "INSERT INTO engines (id, cylinder,configuratin, capacity, crankshaft, aspirations," +
-		"horsepower, torque) VALUES (?,?,?,?,?,?,?,?)"
-	if _, err := e.db.Exec(query, newEngine.Id, newEngine.Displacement, newEngine.Configuration,
-		newEngine.Crankshaft, newEngine.Aspirations, newEngine.Horsepower, newEngine.Torque); err != nil {
+	query := "INSERT INTO engines (id, configuration,displacement, crankshaft, " +
+		"horsepower, torque) VALUES (?,?,?,?,?,?)"
+	if _, err := e.db.Exec(query, newEngine.Id, newEngine.Configuration, newEngine.Displacement,
+		newEngine.Crankshaft, newEngine.Horsepower, newEngine.Torque); err != nil {
 		logrus.Error("Model : cannot insert engine")
 		return nil
 	}

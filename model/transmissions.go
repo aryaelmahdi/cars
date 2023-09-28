@@ -6,9 +6,7 @@ import (
 )
 
 type Transmission struct {
-	Name  string `db:"name" json:"name"`
-	Gears string `db:"gears" json:"gears"`
-	Type  string `db:"type" json:"type"`
+	Type string `db:"type" json:"type"`
 }
 
 type TransmissionModel struct {
@@ -20,8 +18,8 @@ func (tm *TransmissionModel) Init(db *sqlx.DB) {
 }
 
 func (tm *TransmissionModel) InsertTransmisson(newTrans Transmission) *Transmission {
-	query := "INSERT INTO transmissions (name,gears,type) VALUES (?,?,?)"
-	if _, err := tm.db.Exec(query, &newTrans.Name, &newTrans.Gears, &newTrans.Type); err != nil {
+	query := "INSERT INTO transmissions (type) VALUES (?)"
+	if _, err := tm.db.Exec(query, &newTrans.Type); err != nil {
 		logrus.Error("Model : cannot insert transmission")
 		return nil
 	}

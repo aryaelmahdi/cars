@@ -9,7 +9,7 @@ type Manufacturers struct {
 	Name      string `db:"name" json:"name"`
 	Founder   string `db:"founder" json:"founder"`
 	Country   string `db:"country" json:"country"`
-	YearFound int    `db:"year_found" json:"year_found"`
+	YearFound int    `db:"year_founded" json:"year_founded"`
 }
 
 type ManufacturersModel struct {
@@ -40,8 +40,8 @@ func (m *ManufacturersModel) GetManufacturersByName(name string) *Manufacturers 
 }
 
 func (m *ManufacturersModel) InsertManufacturer(newMan Manufacturers) *Manufacturers {
-	query := "INSERT INTO manufacturers (name, founder, country, year_found) VALUES (?,?,?,?)"
-	if _, err := m.db.Exec(query, newMan.Name, newMan.Founder, newMan.Country, newMan.YearFound); err != nil {
+	query := "INSERT INTO manufacturers (name, founder, year_founded, country) VALUES (?,?,?,?)"
+	if _, err := m.db.Exec(query, newMan.Name, newMan.Founder, newMan.YearFound, newMan.Country); err != nil {
 		logrus.Error("Model : cannot insert manufacturer")
 		return nil
 	}

@@ -63,3 +63,10 @@ func CarRoutes(e *echo.Echo, cc controller.CarsController) {
 	e.POST("/cars", cc.InsertCars())
 	e.DELETE("/cars/:name", cc.DeleteCar())
 }
+
+func EngineRoutes(e *echo.Echo, ec controller.EngineController) {
+	e.GET("/engines", ec.GetAllEngines())
+	e.GET("/engines/:id", ec.GetEngineByID())
+	e.POST("/engines", ec.InsertEngine())
+	e.DELETE("engines/:id", ec.DeleteEngine())
+}

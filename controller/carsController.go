@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"project/helper"
@@ -21,52 +22,39 @@ func (cc *CarsController) InsertCars() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		input := model.Car{}
 		if err := c.Bind(&input); err != nil {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
+			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", err))
 		}
 
 		file, _, err := c.Request().FormFile("image")
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("failed to read image", nil))
+			return c.JSON(http.StatusBadRequest, helper.SetResponse("failed to read image", err))
 		}
 
 		name := c.FormValue("name")
 		if name == "" {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
+			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", err))
 		}
 		make := c.FormValue("make")
 		if make == "" {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
+			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", err))
 		}
-		aspiration := c.FormValue("aspiration")
-		if aspiration == "" {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
-		}
-		fuel := c.FormValue("fuel")
-		if fuel == "" {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
-		}
-		transmission := c.FormValue("transmission")
-		if transmission == "" {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
+		powerplant := c.FormValue("powerplant")
+		if powerplant == "" {
+			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", err))
 		}
 		drivetrain := c.FormValue("drivetrain")
 		if drivetrain == "" {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
-		}
-		types := c.FormValue("type")
-		if transmission == "" {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
+			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", err))
 		}
 
 		imageBytes, err := io.ReadAll(file)
 		input.Image = imageBytes
 		input.Name = name
 		input.Make = make
-		input.Aspiration = aspiration
-		input.Fuel = fuel
-		input.Transmission = transmission
+		input.Powerplant = powerplant
 		input.Drivetrain = drivetrain
-		input.Type = types
+
+		fmt.Println("inserted model :", input.Drivetrain, input.Powerplant, input.Name, input.Make)
 
 		res := cc.model.InsertCar(input)
 		if res == nil {
