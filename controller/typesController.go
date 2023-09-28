@@ -8,22 +8,21 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type TransmissionsController struct {
-	model model.TransmissionModel
+type TypesController struct {
+	model model.TypesModel
 }
 
-func (tc *TransmissionsController) Init(tm model.TransmissionModel) {
+func (tc *TypesController) Init(tm model.TypesModel) {
 	tc.model = tm
 }
 
-func (tc *TransmissionsController) InsertTransmission() echo.HandlerFunc {
+func (tc *TypesController) InsertTypes() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		input := model.Transmission{}
+		input := model.Types{}
 		if err := c.Bind(&input); err != nil {
 			return c.JSON(http.StatusBadRequest, nil)
 		}
-
-		res := tc.model.InsertTransmisson(input)
+		res := tc.model.InsertTypes(input)
 		if res == nil {
 			return c.JSON(http.StatusInternalServerError, nil)
 		}
@@ -31,28 +30,28 @@ func (tc *TransmissionsController) InsertTransmission() echo.HandlerFunc {
 	}
 }
 
-func (tc *TransmissionsController) GetAllTransmissions() echo.HandlerFunc {
+func (tc *TypesController) GetAllTypes() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		res := tc.model.GetAllTransmissions()
+		res := tc.model.GetAllTypes()
 		return c.JSON(http.StatusOK, helper.SetResponse("success", res))
 	}
 }
 
-func (tc *TransmissionsController) GetTransmissionByName() echo.HandlerFunc {
+func (tc *TypesController) GetTypeByName() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		name := c.Param("name")
-		res := tc.model.GetTransmissionsByName(name)
+		res := tc.model.GetTypeByName(name)
 		if res == nil {
-			c.JSON(http.StatusBadRequest, nil)
+			return c.JSON(http.StatusBadRequest, nil)
 		}
 		return c.JSON(http.StatusOK, helper.SetResponse("success", res))
 	}
 }
 
-func (tc *TransmissionsController) DeleteTransmission() echo.HandlerFunc {
+func (tc *TypesController) DeleteTypes() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		name := c.Param("name")
-		if err := tc.model.DeleteTransmission(name); err != nil {
+		if err := tc.model.DeleteType(name); err != nil {
 			return c.JSON(http.StatusBadRequest, nil)
 		}
 		return c.JSON(http.StatusNoContent, nil)

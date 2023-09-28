@@ -6,8 +6,7 @@ import (
 )
 
 type Aspirations struct {
-	Id    string `db:"id" json:"id"`
-	Image []byte `db:"image"`
+	Id string `db:"id" json:"id"`
 }
 
 type AspirationsModel struct {
@@ -19,8 +18,8 @@ func (a *AspirationsModel) Init(db *sqlx.DB) {
 }
 
 func (a *AspirationsModel) InsertAspiration(newAsp Aspirations) (*Aspirations, error) {
-	query := "INSERT INTO aspirations (id, image) VALUES (?,?)"
-	_, err := a.db.Exec(query, &newAsp.Id, &newAsp.Image)
+	query := "INSERT INTO aspirations (id) VALUES (?)"
+	_, err := a.db.Exec(query, &newAsp.Id)
 	if err != nil {
 		logrus.Error("Model : failed to insert aspirations")
 		return nil, err

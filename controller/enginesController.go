@@ -1,1 +1,48 @@
 package controller
+
+import (
+	"net/http"
+	"project/helper"
+	"project/model"
+
+	"github.com/labstack/echo/v4"
+)
+
+type EngineController struct {
+	model model.EngineModel
+}
+
+func (ec *EngineController) Init(em model.EngineModel) {
+	ec.model = em
+}
+
+func (ec *EngineController) GetAllEngines() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res := ec.model.GetAllEngine()
+		if res == nil {
+			return c.JSON(http.StatusInternalServerError, helper.SetResponse("something went wrong", nil))
+		}
+		return c.JSON(http.StatusOK, helper.SetResponse("success", res))
+	}
+}
+
+func (ec *EngineController) GetEngineByID() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Param("id")
+		res := ec.model.GetEngineByID(id)
+		if res == nil {
+			return c.JSON(http.StatusInternalServerError, nil)
+		}
+		return c.JSON(http.StatusOK, helper.SetResponse("success", res))
+	}
+}
+
+func (ec *EngineController) DeleteEngine() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Param("id")
+		if err := ec.model.DeleteEngine(id); err != nil {
+			return c.JSON(http.StatusBadRequest, nil)
+		}
+		return c.JSON(http.StatusNoContent, nil)
+	}
+}

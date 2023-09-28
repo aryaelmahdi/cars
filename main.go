@@ -27,6 +27,36 @@ func main() {
 	aspirationController := controller.AspirationsController{}
 	aspirationController.Init(model.AspirationsModel(userModel))
 
+	drivetrainModel := model.DrivetrainModel{}
+	drivetrainModel.Init(db.Database)
+	drivetrainController := controller.DrivetrainController{}
+	drivetrainController.Init(drivetrainModel)
+
+	fuelModel := model.FuelModel{}
+	fuelModel.Init(db.Database)
+	fuelController := controller.FuelController{}
+	fuelController.Init(fuelModel)
+
+	transmissionModel := model.TransmissionModel{}
+	transmissionModel.Init(db.Database)
+	transmissionController := controller.TransmissionsController{}
+	transmissionController.Init(transmissionModel)
+
+	manufacturerModel := model.ManufacturersModel{}
+	manufacturerModel.Init(db.Database)
+	manufacturerController := controller.ManufacturersController{}
+	manufacturerController.Init(manufacturerModel)
+
+	typesModel := model.TypesModel{}
+	typesModel.Init(db.Database)
+	typesController := controller.TypesController{}
+	typesController.Init(typesModel)
+
+	carModel := model.CarModel{}
+	carModel.Init(db.Database)
+	carController := controller.CarsController{}
+	carController.Init(carModel)
+
 	e.Pre(middleware.RemoveTrailingSlash())
 
 	e.Use(middleware.CORS())
@@ -43,6 +73,12 @@ func main() {
 
 	routes.UserRoutes(e, userController)
 	routes.AspirationRoutes(e, aspirationController)
+	routes.DrivertrainRoutes(e, drivetrainController)
+	routes.FuelRoutes(e, fuelController)
+	routes.TransmissionRoutes(e, transmissionController)
+	routes.ManufacturersRoutes(e, manufacturerController)
+	routes.TypesRoutes(e, typesController)
+	routes.CarRoutes(e, carController)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.ServerPort)).Error())
 }

@@ -8,25 +8,25 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type ManufacturersController struct {
-	model model.ManufacturersModel
+type FuelController struct {
+	model model.FuelModel
 }
 
-func (mc *ManufacturersController) Init(m model.ManufacturersModel) {
-	mc.model = m
+func (fc *FuelController) Init(fm model.FuelModel) {
+	fc.model = fm
 }
 
-func (mc *ManufacturersController) GetAllManufacturers() echo.HandlerFunc {
+func (fc *FuelController) GetAllFuel() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		res := mc.model.GetAllManufacturers()
+		res := fc.model.GetAllFuel()
 		return c.JSON(http.StatusOK, helper.SetResponse("success", res))
 	}
 }
 
-func (mc *ManufacturersController) GetManufacturersByName() echo.HandlerFunc {
+func (fc *FuelController) GetFuelByName() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		name := c.Param("name")
-		res := mc.model.GetManufacturersByName(name)
+		res := fc.model.GetFuelByName(name)
 		if res == nil {
 			return c.JSON(http.StatusBadRequest, nil)
 		}
@@ -34,23 +34,24 @@ func (mc *ManufacturersController) GetManufacturersByName() echo.HandlerFunc {
 	}
 }
 
-func (mc *ManufacturersController) DeleteManufacturer() echo.HandlerFunc {
+func (fc *FuelController) DeleteFuel() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		name := c.Param("name")
-		if err := mc.model.DeleteManufacturer(name); err != nil {
+		if err := fc.model.DeleteFuel(name); err != nil {
 			return c.JSON(http.StatusBadRequest, nil)
 		}
 		return c.JSON(http.StatusNoContent, nil)
 	}
 }
 
-func (mc *ManufacturersController) InsertManufacturer() echo.HandlerFunc {
+func (fc *FuelController) InsertFuel() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		input := model.Manufacturers{}
+		input := model.Fuel{}
 		if err := c.Bind(&input); err != nil {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
+			return c.JSON(http.StatusBadRequest, nil)
 		}
-		res := mc.model.InsertManufacturer(input)
+		res := fc.model.InsertFuel(input)
+
 		if res == nil {
 			return c.JSON(http.StatusInternalServerError, nil)
 		}

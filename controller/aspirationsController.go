@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"io"
 	"net/http"
 	"project/helper"
 	"project/model"
@@ -23,21 +22,6 @@ func (ac *AspirationsController) InsertAspiration() echo.HandlerFunc {
 		if err := c.Bind(&input); err != nil {
 			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
 		}
-
-		file, _, err := c.Request().FormFile("image")
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("failed to read image", nil))
-		}
-
-		name := c.FormValue("id")
-		if name == "" {
-			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid input", nil))
-		}
-
-		imageBytes, err := io.ReadAll(file)
-		input.Image = imageBytes
-		input.Id = name
-
 		res, err := ac.model.InsertAspiration(input)
 
 		if res == nil || err != nil {
