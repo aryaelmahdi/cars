@@ -1,6 +1,8 @@
 package model
 
 import (
+	"database/sql"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 )
@@ -12,9 +14,9 @@ type Users struct {
 	Password string `json:"password"`
 }
 
-type LoginModel struct {
-	email    string
-	password string
+type Login struct {
+	Email    string
+	Password string
 }
 
 type UserModel struct {
@@ -23,6 +25,20 @@ type UserModel struct {
 
 func (u *UserModel) Init(db *sqlx.DB) {
 	u.db = db
+}
+
+func (u *UserModel) Login(email string, password string) *Users {
+	var userData = Users{}
+	query := "Select * from users where email = ? and password = ?"
+	if err := u.db.Get(&userData, query, email, password); err != nil {
+		if err == sql.ErrNoRows {
+			logrus.Error("Model : User not found", err)
+		}
+		logrus.Error("Model : Login failed,", err.Error())
+		return nil
+	}
+
+	return &userData
 }
 
 func (u *UserModel) Register(newUser Users) (*Users, error) {

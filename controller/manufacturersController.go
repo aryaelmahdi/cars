@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"project/config"
 	"project/helper"
 	"project/model"
 
@@ -9,11 +10,13 @@ import (
 )
 
 type ManufacturersController struct {
-	model model.ManufacturersModel
+	config config.Config
+	model  model.ManufacturersModel
 }
 
-func (mc *ManufacturersController) Init(m model.ManufacturersModel) {
+func (mc *ManufacturersController) Init(m model.ManufacturersModel, cfg config.Config) {
 	mc.model = m
+	mc.config = cfg
 }
 
 func (mc *ManufacturersController) GetAllManufacturers() echo.HandlerFunc {

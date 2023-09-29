@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"project/config"
 	"project/helper"
 	"project/model"
 
@@ -9,11 +10,13 @@ import (
 )
 
 type DrivetrainController struct {
-	model model.DrivetrainModel
+	model  model.DrivetrainModel
+	config config.Config
 }
 
-func (dc *DrivetrainController) Init(dm model.DrivetrainModel) {
+func (dc *DrivetrainController) Init(dm model.DrivetrainModel, cfg config.Config) {
 	dc.model = dm
+	dc.config = cfg
 }
 
 func (dc *DrivetrainController) GetAllDrivetrain() echo.HandlerFunc {

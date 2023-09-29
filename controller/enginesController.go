@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"project/config"
 	"project/helper"
 	"project/model"
 
@@ -9,11 +10,13 @@ import (
 )
 
 type EngineController struct {
-	model model.EngineModel
+	model  model.EngineModel
+	config config.Config
 }
 
-func (ec *EngineController) Init(em model.EngineModel) {
+func (ec *EngineController) Init(em model.EngineModel, cfg config.Config) {
 	ec.model = em
+	ec.config = cfg
 }
 
 func (ec *EngineController) InsertEngine() echo.HandlerFunc {

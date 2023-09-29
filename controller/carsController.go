@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"project/config"
 	"project/helper"
 	"project/model"
 
@@ -11,11 +12,13 @@ import (
 )
 
 type CarsController struct {
-	model model.CarModel
+	model  model.CarModel
+	config config.Config
 }
 
-func (cc *CarsController) Init(cm model.CarModel) {
+func (cc *CarsController) Init(cm model.CarModel, cfg config.Config) {
 	cc.model = cm
+	cc.config = cfg
 }
 
 func (cc *CarsController) InsertCars() echo.HandlerFunc {

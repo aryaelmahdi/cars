@@ -1,8 +1,11 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
+	"project/config"
 	"project/helper"
+	mid "project/middleware"
 	"project/model"
 	"strconv"
 
@@ -11,11 +14,42 @@ import (
 )
 
 type UserController struct {
-	model model.UserModel
+	model  model.UserModel
+	config config.Config
 }
 
-func (uc *UserController) Init(um model.UserModel) {
+func (uc *UserController) Init(um model.UserModel, cfg config.Config) {
 	uc.model = um
+	uc.config = cfg
+}
+
+func (uc *UserController) Login() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var input = model.Login{}
+		if err := c.Bind(&input); err != nil {
+			return c.JSON(http.StatusBadRequest, helper.SetResponse("invalid user input", nil))
+		}
+
+		res := uc.model.Login(input.Email, input.Password)
+
+		if res == nil {
+			return c.JSON(http.StatusInternalServerError, helper.SetResponse("something went wrong", nil))
+		}
+
+		if res.Id == 0 {
+			return c.JSON(http.StatusNotFound, helper.SetResponse("data not found", nil))
+		}
+
+		jwtToken := mid.GenerateJWT(uc.config.Secret, res.Name, fmt.Sprint(res.Id))
+
+		if jwtToken == nil {
+			return c.JSON(http.StatusInternalServerError, helper.SetResponse("cannot process data", nil))
+		}
+
+		jwtToken["info"] = res
+
+		return c.JSON(http.StatusOK, helper.SetResponse("success", jwtToken))
+	}
 }
 
 func (uc *UserController) Register() echo.HandlerFunc {

@@ -13,6 +13,15 @@ type Car struct {
 	Image      []byte `db:"image"`
 }
 
+type CompleteCar struct {
+	Car
+	Configuration string `db:"configuration" json:"configuration"`
+	Displacement  string `db:"displacement" json:"displacement"`
+	Crankshaft    string `db:"crankshaft" json:"crankshaft"`
+	Horsepower    string `db:"horsepower" json:"horsepower"`
+	Torque        string `db:"torque" json:"torque"`
+}
+
 type CarModel struct {
 	db *sqlx.DB
 }
@@ -31,20 +40,24 @@ func (cm *CarModel) InsertCar(newCar Car) *Car {
 	return &newCar
 }
 
-func (cm *CarModel) GetAllCars() []Car {
-	cars := []Car{}
-	query := "SELECT * FROM cars"
+func (cm *CarModel) GetAllCars() []CompleteCar {
+	cars := []CompleteCar{}
+	query := "SELECT cars.*, `engines`.configuration, `engines`.displacement," +
+		"`engines`.crankshaft, `engines`.horsepower, `engines`.torque from cars " +
+		"Cross join `engines` where engines.id = cars.powerplant"
 	if err := cm.db.Select(&cars, query); err != nil {
-		logrus.Error("Model : cannot get cars")
+		logrus.Error("Model : cannot get cars", err)
 	}
 	return cars
 }
 
-func (cm *CarModel) GetCarByName(name string) *Car {
-	car := Car{}
-	query := "SELECT * FROM cars where name = ?"
+func (cm *CarModel) GetCarByName(name string) *CompleteCar {
+	car := CompleteCar{}
+	query := "SELECT cars.*, engines.configuration, engines.displacement," +
+		"engines.crankshaft, engines.horsepower, engines.torque from cars " +
+		"join `engines` on cars.powerplant = `engines`.id where cars.name = ?"
 	if err := cm.db.Get(&car, query, &name); err != nil {
-		logrus.Error("Model : cannot get car name")
+		logrus.Error("Model : cannot get car name", err)
 		return nil
 	}
 	return &car
